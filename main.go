@@ -10,33 +10,32 @@ import (
 )
 
 func main() {
+	startCommands := []string{"whoami", "hostname", "pwd"}
+
+	var hostname string
+
+	for i, command := range startCommands {
+		outputBs, err := exec.Command(command).Output()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		output := string(outputBs)
+
+		output = strings.TrimSuffix(output, "\n")
+
+		if i == 1 {
+			hostname = hostname + " @ " + output 
+		} else if i == 2 {
+			hostname = hostname + ":~" + output
+		} else {
+			hostname = hostname + "" + output
+		}
+	}
+		
 	for {
 		fmt.Print("> ")
-
-		startCommands := []string{"whoami", "hostname", "pwd"}
-
-		var hostname string
-
-		for i, command := range startCommands {
-			outputBs, err := exec.Command(command).Output()
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-
-			output := string(outputBs)
-
-			output = strings.TrimSuffix(output, "\n")
-
-			if i == 1 {
-				hostname = hostname + " @ " + output 
-			} else if i == 2 {
-				hostname = hostname + ":~" + output
-			} else {
-				hostname = hostname + "" + output
-			}
-		}
-		
 		fmt.Print(hostname + "$ ")
 
 		reader := bufio.NewReader(os.Stdin)
